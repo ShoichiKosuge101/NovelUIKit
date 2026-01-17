@@ -1,0 +1,11 @@
+{
+  "name": "com.example.noveluikit",
+  "displayName": "NovelUIKit",
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "description": "Cinematic text presentation system for Unity visual novels.",
+  "keywords": ["novel", "text", "tmp"],
+  "author": {
+    "name": "NovelUIKit"
+  }
+}
