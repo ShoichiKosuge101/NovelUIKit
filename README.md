@@ -15,6 +15,14 @@ Unity向けノベルゲームの演出重視テキスト表示システムです
 1. UPMの`manifest.json`に依存パッケージを追加します。
 2. `NovelUIKit`をサブモジュールとして追加するか、UPMローカルパッケージとして参照します。
 
+## 前提条件
+
+このパッケージを使用するには、メインプロジェクトで以下が必要です：
+
+1. **NuGetForUnity** をインストール
+2. **ZLogger** をNuGet経由でインストール
+3. C# 10を有効化するため `Assets/csc.rsp` に `-langVersion:10 -nullable` を記載
+
 ## 基本的な使い方
 
 ```csharp
@@ -41,4 +49,3 @@ public sealed class SampleUsage : MonoBehaviour
     }
 }
 ```
-
