@@ -19,9 +19,29 @@ Unity向けノベルゲームの演出重視テキスト表示システムです
 
 このパッケージを使用するには、メインプロジェクトで以下が必要です：
 
+1. **OpenUPM の scoped registry** を追加（UniRx の取得に必要）
 1. **NuGetForUnity** をインストール
 2. **ZLogger** をNuGet経由でインストール
 3. C# 10を有効化するため `Assets/csc.rsp` に `-langVersion:10 -nullable` を記載
+
+### OpenUPM registry の設定例
+
+Unity の `Packages/manifest.json` に以下を追加してください。
+
+```json
+{
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.neuecc",
+        "com.cysharp"
+      ]
+    }
+  ]
+}
+```
 
 ## 基本的な使い方
 
