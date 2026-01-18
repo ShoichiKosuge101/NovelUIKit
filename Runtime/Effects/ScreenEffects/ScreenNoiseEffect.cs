@@ -31,6 +31,7 @@ namespace NovelUIKit.Effects.ScreenEffects
         private Camera targetCamera;
         private Material materialInstance;
         private CancellationTokenSource noiseCts;
+        private bool isPipelineSubscribed;
         private float runtimeNoiseIntensity;
 
         private void Awake()
@@ -41,13 +42,22 @@ namespace NovelUIKit.Effects.ScreenEffects
         private void OnEnable()
         {
             EnsureMaterial();
-            RenderPipelineManager.beginCameraRendering += HandleBeginCameraRendering;
+            if (GraphicsSettings.currentRenderPipeline != null)
+            {
+                RenderPipelineManager.beginCameraRendering += HandleBeginCameraRendering;
+                isPipelineSubscribed = true;
+            }
         }
 
         private void OnDisable()
         {
-            RenderPipelineManager.beginCameraRendering -= HandleBeginCameraRendering;
-            noiseCts?.Cancel();
+            if (isPipelineSubscribed)
+            {
+                RenderPipelineManager.beginCameraRendering -= HandleBeginCameraRendering;
+                isPipelineSubscribed = false;
+            }
+
+            CancelNoise();
         }
 
         private void OnDestroy()
@@ -58,7 +68,7 @@ namespace NovelUIKit.Effects.ScreenEffects
                 materialInstance = null;
             }
 
-            noiseCts?.Dispose();
+            CancelNoise();
         }
 
         public void SetBaseNoise(float intensity)
@@ -90,7 +100,7 @@ namespace NovelUIKit.Effects.ScreenEffects
                 return UniTask.CompletedTask;
             }
 
-            noiseCts?.Cancel();
+            CancelNoise();
             noiseCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             runtimeNoiseIntensity = Mathf.Clamp01(intensity);
 
@@ -101,7 +111,7 @@ namespace NovelUIKit.Effects.ScreenEffects
 
         public void StopNoise()
         {
-            noiseCts?.Cancel();
+            CancelNoise();
             runtimeNoiseIntensity = 0f;
             ApplyMaterialParameters();
             ZLogger.LogInformation("ScreenNoiseEffect stopped.");
@@ -151,6 +161,18 @@ namespace NovelUIKit.Effects.ScreenEffects
             {
                 hideFlags = HideFlags.HideAndDontSave
             };
+        }
+
+        private void CancelNoise()
+        {
+            if (noiseCts == null)
+            {
+                return;
+            }
+
+            noiseCts.Cancel();
+            noiseCts.Dispose();
+            noiseCts = null;
         }
 
         private void ApplyMaterialParameters()
