@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 
@@ -29,7 +28,7 @@ namespace NovelUIKit.Effects.VertexModifiers
                 return;
             }
 
-            float currentTime = Time.unscaledTime;
+            float currentTime = Time.unscaledTime + time;
             int clampedStart = Mathf.Clamp(startIndex, 0, textInfo.characterCount - 1);
             int clampedEnd = Mathf.Clamp(endIndex, clampedStart, textInfo.characterCount - 1);
 
