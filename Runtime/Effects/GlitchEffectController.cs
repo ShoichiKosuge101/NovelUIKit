@@ -30,6 +30,7 @@ namespace NovelUIKit.Effects
             var stopTask = _stopSignal.First().ToUniTask(cancellationToken: linkedCts.Token);
 
             var completed = await UniTask.WhenAny(effectTask, stopTask);
+            linkedCts.Cancel();
             if (completed == 1)
             {
                 return;
@@ -49,6 +50,7 @@ namespace NovelUIKit.Effects
             var stopTask = _stopSignal.First().ToUniTask(cancellationToken: linkedCts.Token);
 
             var completed = await UniTask.WhenAny(effectTask, stopTask);
+            linkedCts.Cancel();
             if (completed == 1)
             {
                 return;
@@ -69,6 +71,7 @@ namespace NovelUIKit.Effects
             var stopTask = _stopSignal.First().ToUniTask(cancellationToken: linkedCts.Token);
 
             var completed = await UniTask.WhenAny(effectTask, stopTask);
+            linkedCts.Cancel();
             if (completed == 1)
             {
                 return;
