@@ -134,9 +134,24 @@ namespace NovelUIKit.Runtime.TextPresenter
 
         private static bool TryExtractRuby(string content, out string baseText, out string rubyText)
         {
-            var rtStart = content.IndexOf("<rt>", StringComparison.Ordinal);
-            var rtEnd = content.IndexOf("</rt>", StringComparison.Ordinal);
-            if (rtStart == -1 || rtEnd == -1 || rtEnd <= rtStart)
+            var rtStart = FindTagStart(content, "rt");
+            if (rtStart == -1)
+            {
+                baseText = string.Empty;
+                rubyText = string.Empty;
+                return false;
+            }
+
+            var rtTagEnd = content.IndexOf('>', rtStart);
+            if (rtTagEnd == -1)
+            {
+                baseText = string.Empty;
+                rubyText = string.Empty;
+                return false;
+            }
+
+            var rtEnd = content.IndexOf("</rt>", rtTagEnd + 1, StringComparison.Ordinal);
+            if (rtEnd == -1 || rtEnd <= rtTagEnd)
             {
                 baseText = string.Empty;
                 rubyText = string.Empty;
@@ -144,7 +159,7 @@ namespace NovelUIKit.Runtime.TextPresenter
             }
 
             baseText = content.Substring(0, rtStart);
-            rubyText = content.Substring(rtStart + "<rt>".Length, rtEnd - rtStart - "<rt>".Length);
+            rubyText = content.Substring(rtTagEnd + 1, rtEnd - rtTagEnd - 1);
             return true;
         }
 
@@ -167,7 +182,19 @@ namespace NovelUIKit.Runtime.TextPresenter
                 return false;
             }
 
-            var closeIndex = text.IndexOf('>', nameStart + tagName.Length);
+            var nameEnd = nameStart + tagName.Length;
+            if (nameEnd >= text.Length)
+            {
+                return false;
+            }
+
+            var nextChar = text[nameEnd];
+            if (nextChar != '>' && !char.IsWhiteSpace(nextChar))
+            {
+                return false;
+            }
+
+            var closeIndex = text.IndexOf('>', nameEnd);
             if (closeIndex == -1)
             {
                 return false;
@@ -201,6 +228,38 @@ namespace NovelUIKit.Runtime.TextPresenter
             var tag = text.Substring(startIndex, length);
             var spaceIndex = tag.IndexOf(' ');
             return spaceIndex == -1 ? tag : tag.Substring(0, spaceIndex);
+        }
+
+        private static int FindTagStart(string text, string tagName)
+        {
+            var searchStart = 0;
+            while (searchStart < text.Length)
+            {
+                var startIndex = text.IndexOf('<', searchStart);
+                if (startIndex == -1)
+                {
+                    return -1;
+                }
+
+                var nameStart = startIndex + 1;
+                if (nameStart + tagName.Length <= text.Length &&
+                    text.AsSpan(nameStart).StartsWith(tagName.AsSpan(), StringComparison.Ordinal))
+                {
+                    var nameEnd = nameStart + tagName.Length;
+                    if (nameEnd < text.Length)
+                    {
+                        var nextChar = text[nameEnd];
+                        if (nextChar == '>' || char.IsWhiteSpace(nextChar))
+                        {
+                            return startIndex;
+                        }
+                    }
+                }
+
+                searchStart = startIndex + 1;
+            }
+
+            return -1;
         }
     }
 

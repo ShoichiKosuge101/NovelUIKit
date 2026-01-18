@@ -31,6 +31,19 @@ namespace NovelUIKit.Tests.EditMode
         }
 
         [Test]
+        public void ParseRubyTagWithAttributes()
+        {
+            var handler = new RubyTextHandler();
+            var result = handler.Parse("<ruby class=note>漢字<rt class=note>かんじ</rt></ruby>");
+
+            Assert.That(result.OutputText, Is.EqualTo("漢字"));
+            Assert.That(result.Annotations, Has.Count.EqualTo(1));
+            Assert.That(result.Annotations[0].BaseStartIndex, Is.EqualTo(0));
+            Assert.That(result.Annotations[0].BaseLength, Is.EqualTo(2));
+            Assert.That(result.Annotations[0].RubyText, Is.EqualTo("かんじ"));
+        }
+
+        [Test]
         public void VisibleIndexIgnoresRubyTextAndRichTextTags()
         {
             var handler = new RubyTextHandler();
