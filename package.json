@@ -5,6 +5,10 @@
   "unity": "2022.3",
   "description": "Cinematic text presentation system for Unity visual novels.",
   "keywords": ["novel", "text", "tmp"],
+  "dependencies": {
+    "com.unity.textmeshpro": "3.0.0",
+    "com.cysharp.unitask": "2.5.0"
+  },
   "author": {
     "name": "NovelUIKit"
   }

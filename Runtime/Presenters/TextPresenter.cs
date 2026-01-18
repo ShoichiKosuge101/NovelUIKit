@@ -45,17 +45,15 @@ namespace NovelUIKit.Runtime.Presenters
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    var timeSeconds = options.UseUnscaledTime ? Time.unscaledTime : Time.time;
-
                     if (skipRequested && options.RevealImmediatelyOnSkip)
                     {
                         text.maxVisibleCharacters = totalCharacters;
-                        ApplyEffectRanges(options.EffectRanges, totalCharacters, timeSeconds);
+                        ApplyEffectRanges(options.EffectRanges, totalCharacters, options.UseUnscaledTime);
                         break;
                     }
 
                     text.maxVisibleCharacters = visibleCount;
-                    ApplyEffectRanges(options.EffectRanges, visibleCount, timeSeconds);
+                    ApplyEffectRanges(options.EffectRanges, visibleCount, options.UseUnscaledTime);
 
                     if (visibleCount < totalCharacters)
                     {
@@ -82,12 +80,14 @@ namespace NovelUIKit.Runtime.Presenters
             text.maxVisibleCharacters = 0;
         }
 
-        private void ApplyEffectRanges(IReadOnlyList<TextEffectRange> ranges, int visibleCount, float timeSeconds)
+        private void ApplyEffectRanges(IReadOnlyList<TextEffectRange> ranges, int visibleCount, bool useUnscaledTime)
         {
             if (ranges == null || ranges.Count == 0)
             {
                 return;
             }
+
+            var timeSeconds = useUnscaledTime ? Time.unscaledTime : Time.time;
 
             foreach (var range in ranges)
             {
