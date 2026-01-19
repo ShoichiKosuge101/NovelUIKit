@@ -15,7 +15,8 @@ namespace NovelUIKit.Effects.ScreenEffects
     {
         private static readonly ILogger Logger = LoggerFactory.Create(builder =>
         {
-            builder.AddZLoggerUnityDebug();
+            builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
+            builder.AddZLoggerConsole();
         }).CreateLogger<ScreenNoiseEffect>();
 
         [Header("Shader")]
@@ -111,7 +112,7 @@ namespace NovelUIKit.Effects.ScreenEffects
             noiseCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             runtimeNoiseIntensity = Mathf.Clamp01(intensity);
 
-            Logger.ZLogInformation("ScreenNoiseEffect start. intensity={0} duration={1}", runtimeNoiseIntensity, duration);
+            Logger.ZLogInformation($"ScreenNoiseEffect start. intensity={runtimeNoiseIntensity} duration={duration}");
 
             return RunNoiseAsync(duration, noiseCts.Token);
         }

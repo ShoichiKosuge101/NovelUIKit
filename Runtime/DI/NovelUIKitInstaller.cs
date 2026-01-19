@@ -1,6 +1,5 @@
 using NovelUIKit.Effects;
 using NovelUIKit.Effects.VertexModifiers;
-using NovelUIKit.Runtime.Presenters;
 using VContainer;
 using VContainer.Unity;
 
@@ -10,8 +9,8 @@ namespace NovelUIKit.Runtime.DI
     {
         public void Install(IContainerBuilder builder)
         {
-            builder.Register<TextPresenter>(Lifetime.Scoped)
-                .As<ITextPresenter>();
+            builder.Register<NovelUIKit.Runtime.Presenters.TextPresenter>(Lifetime.Scoped)
+                .As<NovelUIKit.Runtime.Presenters.ITextPresenter>();
             builder.Register<GlitchEffectController>(Lifetime.Scoped)
                 .As<IGlitchEffectController>();
 

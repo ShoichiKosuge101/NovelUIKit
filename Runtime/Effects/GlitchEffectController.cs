@@ -13,7 +13,8 @@ namespace NovelUIKit.Effects
     {
         private static readonly ILogger Logger = LoggerFactory.Create(builder =>
         {
-            builder.AddZLoggerUnityDebug();
+            builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
+            builder.AddZLoggerConsole();
         }).CreateLogger<GlitchEffectController>();
 
         private CancellationTokenSource _stopCts = new CancellationTokenSource();
@@ -24,7 +25,7 @@ namespace NovelUIKit.Effects
             ValidateRange(startIndex, endIndex);
             var clampedDuration = Mathf.Max(0f, duration);
 
-            Logger.ZLogInformation("Applying glyph corruption from {0} to {1} for {2}s.", startIndex, endIndex, clampedDuration);
+            Logger.ZLogInformation($"Applying glyph corruption from {startIndex} to {endIndex} for {clampedDuration}s.");
 
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, _stopCts.Token);
             var effectTask = UniTask.Delay(TimeSpan.FromSeconds(clampedDuration), cancellationToken: linkedCts.Token);
@@ -44,7 +45,7 @@ namespace NovelUIKit.Effects
         {
             ValidateRange(startIndex, endIndex);
 
-            Logger.ZLogInformation("Applying vertex distortion {0} from {1} to {2}.", type, startIndex, endIndex);
+            Logger.ZLogInformation($"Applying vertex distortion {type} from {startIndex} to {endIndex}.");
 
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, _stopCts.Token);
             var effectTask = UniTask.DelayFrame(1, cancellationToken: linkedCts.Token);
@@ -65,7 +66,7 @@ namespace NovelUIKit.Effects
             var clampedIntensity = Mathf.Clamp01(intensity);
             var clampedDuration = Mathf.Max(0f, duration);
 
-            Logger.ZLogInformation("Playing screen noise with intensity {0} for {1}s.", clampedIntensity, clampedDuration);
+            Logger.ZLogInformation($"Playing screen noise with intensity {clampedIntensity} for {clampedDuration}s.");
 
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, _stopCts.Token);
             var effectTask = UniTask.Delay(TimeSpan.FromSeconds(clampedDuration), cancellationToken: linkedCts.Token);
