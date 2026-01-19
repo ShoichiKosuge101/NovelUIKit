@@ -6,7 +6,7 @@ Unity向けノベルゲームの演出重視テキスト表示システムです
 
 - TextMeshPro
 - UniTask
-- UniRx
+- UniRx（OpenUPM の scoped registry が必須）
 - VContainer
 - ZLogger v2
 
@@ -17,7 +17,7 @@ Unity向けノベルゲームの演出重視テキスト表示システムです
 
 ## 前提条件
 
-このパッケージを使用するには、メインプロジェクトで以下が必要です：
+このパッケージを使用するには、メインプロジェクトで以下が必要です。**Unity の標準レジストリのみでは `com.neuecc.unirx` を解決できないため、OpenUPM の scoped registry を必ず追加してください。**
 
 1. **OpenUPM の scoped registry** を追加（UniRx の取得に必要）
 1. **NuGetForUnity** をインストール
