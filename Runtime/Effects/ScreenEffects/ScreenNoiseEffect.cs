@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
+using Microsoft.Extensions.Logging;
 using UnityEngine;
 using UnityEngine.Rendering;
 using ZLogger;
@@ -11,6 +13,11 @@ namespace NovelUIKit.Effects.ScreenEffects
     [RequireComponent(typeof(Camera))]
     public sealed class ScreenNoiseEffect : MonoBehaviour
     {
+        private static readonly ILogger Logger = LoggerFactory.Create(builder =>
+        {
+            builder.AddZLoggerUnityDebug();
+        }).CreateLogger<ScreenNoiseEffect>();
+
         [Header("Shader")]
         [SerializeField] private Shader screenNoiseShader;
 
@@ -104,7 +111,7 @@ namespace NovelUIKit.Effects.ScreenEffects
             noiseCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             runtimeNoiseIntensity = Mathf.Clamp01(intensity);
 
-            ZLogger.LogInformation("ScreenNoiseEffect start. intensity={0} duration={1}", runtimeNoiseIntensity, duration);
+            Logger.ZLogInformation("ScreenNoiseEffect start. intensity={0} duration={1}", runtimeNoiseIntensity, duration);
 
             return RunNoiseAsync(duration, noiseCts.Token);
         }
@@ -114,7 +121,7 @@ namespace NovelUIKit.Effects.ScreenEffects
             CancelNoise();
             runtimeNoiseIntensity = 0f;
             ApplyMaterialParameters();
-            ZLogger.LogInformation("ScreenNoiseEffect stopped.");
+            Logger.ZLogInformation("ScreenNoiseEffect stopped.");
         }
 
         private async UniTask RunNoiseAsync(float duration, CancellationToken cancellationToken)
@@ -134,7 +141,7 @@ namespace NovelUIKit.Effects.ScreenEffects
                 {
                     runtimeNoiseIntensity = 0f;
                     ApplyMaterialParameters();
-                    ZLogger.LogInformation("ScreenNoiseEffect finished.");
+                    Logger.ZLogInformation("ScreenNoiseEffect finished.");
                 }
             }
         }
@@ -153,7 +160,7 @@ namespace NovelUIKit.Effects.ScreenEffects
 
             if (screenNoiseShader == null)
             {
-                ZLogger.LogWarning("ScreenNoise shader not found. Assign it to ScreenNoiseEffect.");
+                Logger.ZLogWarning("ScreenNoise shader not found. Assign it to ScreenNoiseEffect.");
                 return;
             }
 
