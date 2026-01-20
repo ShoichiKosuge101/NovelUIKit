@@ -112,7 +112,10 @@ namespace NovelUIKit.Effects.ScreenEffects
             noiseCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             runtimeNoiseIntensity = Mathf.Clamp01(intensity);
 
-            Logger.ZLogInformation($"ScreenNoiseEffect start. intensity={runtimeNoiseIntensity} duration={duration}");
+            Logger.LogInformation(
+                "ScreenNoiseEffect start. intensity={Intensity} duration={Duration}",
+                runtimeNoiseIntensity,
+                duration);
 
             return RunNoiseAsync(duration, noiseCts.Token);
         }
@@ -122,7 +125,7 @@ namespace NovelUIKit.Effects.ScreenEffects
             CancelNoise();
             runtimeNoiseIntensity = 0f;
             ApplyMaterialParameters();
-            Logger.ZLogInformation("ScreenNoiseEffect stopped.");
+            Logger.LogInformation("ScreenNoiseEffect stopped.");
         }
 
         private async UniTask RunNoiseAsync(float duration, CancellationToken cancellationToken)
@@ -142,7 +145,7 @@ namespace NovelUIKit.Effects.ScreenEffects
                 {
                     runtimeNoiseIntensity = 0f;
                     ApplyMaterialParameters();
-                    Logger.ZLogInformation("ScreenNoiseEffect finished.");
+                    Logger.LogInformation("ScreenNoiseEffect finished.");
                 }
             }
         }
@@ -161,7 +164,7 @@ namespace NovelUIKit.Effects.ScreenEffects
 
             if (screenNoiseShader == null)
             {
-                Logger.ZLogWarning("ScreenNoise shader not found. Assign it to ScreenNoiseEffect.");
+                Logger.LogWarning("ScreenNoise shader not found. Assign it to ScreenNoiseEffect.");
                 return;
             }
 

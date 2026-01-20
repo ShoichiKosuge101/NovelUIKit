@@ -25,7 +25,11 @@ namespace NovelUIKit.Effects
             ValidateRange(startIndex, endIndex);
             var clampedDuration = Mathf.Max(0f, duration);
 
-            Logger.ZLogInformation($"Applying glyph corruption from {startIndex} to {endIndex} for {clampedDuration}s.");
+            Logger.LogInformation(
+                "Applying glyph corruption from {StartIndex} to {EndIndex} for {Duration}s.",
+                startIndex,
+                endIndex,
+                clampedDuration);
 
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, _stopCts.Token);
             var effectTask = UniTask.Delay(TimeSpan.FromSeconds(clampedDuration), cancellationToken: linkedCts.Token);
@@ -45,7 +49,11 @@ namespace NovelUIKit.Effects
         {
             ValidateRange(startIndex, endIndex);
 
-            Logger.ZLogInformation($"Applying vertex distortion {type} from {startIndex} to {endIndex}.");
+            Logger.LogInformation(
+                "Applying vertex distortion {DistortionType} from {StartIndex} to {EndIndex}.",
+                type,
+                startIndex,
+                endIndex);
 
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, _stopCts.Token);
             var effectTask = UniTask.DelayFrame(1, cancellationToken: linkedCts.Token);
@@ -66,7 +74,10 @@ namespace NovelUIKit.Effects
             var clampedIntensity = Mathf.Clamp01(intensity);
             var clampedDuration = Mathf.Max(0f, duration);
 
-            Logger.ZLogInformation($"Playing screen noise with intensity {clampedIntensity} for {clampedDuration}s.");
+            Logger.LogInformation(
+                "Playing screen noise with intensity {Intensity} for {Duration}s.",
+                clampedIntensity,
+                clampedDuration);
 
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, _stopCts.Token);
             var effectTask = UniTask.Delay(TimeSpan.FromSeconds(clampedDuration), cancellationToken: linkedCts.Token);
@@ -84,7 +95,7 @@ namespace NovelUIKit.Effects
 
         public void StopAllEffects()
         {
-            Logger.ZLogInformation("Stopping all glitch effects.");
+            Logger.LogInformation("Stopping all glitch effects.");
 
             _stopSignal.OnNext(Unit.Default);
             _stopSignal.OnCompleted();
