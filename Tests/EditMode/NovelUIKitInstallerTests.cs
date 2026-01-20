@@ -7,6 +7,7 @@ using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using VContainer;
+using Microsoft.Extensions.Logging;
 
 namespace NovelUIKit.Tests.EditMode
 {
@@ -16,6 +17,7 @@ namespace NovelUIKit.Tests.EditMode
         public void Installer_Registers_ScopedServices()
         {
             var builder = new ContainerBuilder();
+            builder.RegisterInstance<ILoggerFactory>(LoggerFactory.Create(_ => { }));
             var installer = new NovelUIKitInstaller();
             installer.Install(builder);
             using var container = builder.Build();
@@ -25,12 +27,9 @@ namespace NovelUIKit.Tests.EditMode
 
             try
             {
-                using var scope = container.CreateScope(scopeBuilder =>
-                {
-                    scopeBuilder.RegisterInstance<TMP_Text>(textComponent);
-                });
-
-                var presenter = scope.Resolve<ITextPresenter>();
+                using var scope = container.CreateScope();
+                var presenterFactory = scope.Resolve<ITextPresenterFactory>();
+                var presenter = presenterFactory.Create(textComponent);
                 var glitchController = scope.Resolve<IGlitchEffectController>();
 
                 Assert.IsNotNull(presenter);

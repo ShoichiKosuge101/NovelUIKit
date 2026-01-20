@@ -50,16 +50,18 @@ using Cysharp.Threading.Tasks;
 using NovelUIKit.Runtime.Presenters;
 using TMPro;
 using UnityEngine;
+using VContainer;
 
 public sealed class SampleUsage : MonoBehaviour
 {
     [SerializeField] private TMP_Text text;
 
+    [Inject] private ITextPresenterFactory presenterFactory;
     private ITextPresenter presenter;
 
     private void Awake()
     {
-        presenter = new TextPresenter(text);
+        presenter = presenterFactory.Create(text);
     }
 
     private async UniTaskVoid Start()
