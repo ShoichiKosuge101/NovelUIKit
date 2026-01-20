@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using NovelUIKit.Runtime.Effects;
 using TMPro;
 using UnityEngine;
@@ -11,12 +12,14 @@ namespace NovelUIKit.Runtime.Presenters
     public sealed class TextPresenter : ITextPresenter
     {
         private readonly TMP_Text text;
+        private readonly ILogger<TextPresenter> _logger;
         private bool isRunning;
         private bool skipRequested;
 
-        public TextPresenter(TMP_Text text)
+        public TextPresenter(TMP_Text text, ILogger<TextPresenter> logger)
         {
             this.text = text ?? throw new ArgumentNullException(nameof(text));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public bool IsRunning => isRunning;
@@ -32,6 +35,7 @@ namespace NovelUIKit.Runtime.Presenters
             options ??= TextPresenterOptions.Default;
             isRunning = true;
             skipRequested = false;
+            _logger.LogDebug("TextPresenter: starting presentation.");
 
             try
             {
@@ -71,6 +75,7 @@ namespace NovelUIKit.Runtime.Presenters
         public void RequestSkip()
         {
             skipRequested = true;
+            _logger.LogDebug("TextPresenter: skip requested.");
         }
 
         public void Reset()

@@ -21,13 +21,14 @@ namespace NovelUIKit.Samples.BasicDemo
         [SerializeField] private ScreenNoiseEffect screenNoiseEffect;
 
         private readonly RubyTextHandler rubyTextHandler = new RubyTextHandler();
+        private ITextPresenterFactory textPresenterFactory;
         private ITextPresenter textPresenter;
         private IGlitchEffectController glitchEffectController;
 
         [Inject]
-        public void Construct(ITextPresenter presenter, IGlitchEffectController glitchEffectController)
+        public void Construct(ITextPresenterFactory presenterFactory, IGlitchEffectController glitchEffectController)
         {
-            textPresenter = presenter ?? throw new ArgumentNullException(nameof(presenter));
+            textPresenterFactory = presenterFactory ?? throw new ArgumentNullException(nameof(presenterFactory));
             this.glitchEffectController = glitchEffectController ?? throw new ArgumentNullException(nameof(glitchEffectController));
         }
 
@@ -41,11 +42,13 @@ namespace NovelUIKit.Samples.BasicDemo
 
         private async UniTaskVoid Start()
         {
-            if (demoText == null || textPresenter == null)
+            if (demoText == null || textPresenterFactory == null)
             {
                 ZLogger.LogWarning("BasicDemoController: Required references are missing. Demo will not start.");
                 return;
             }
+
+            textPresenter = textPresenterFactory.Create(demoText);
 
             ZLogger.LogInformation("Basic demo started.");
             await RunDemoAsync(this.GetCancellationTokenOnDestroy());
