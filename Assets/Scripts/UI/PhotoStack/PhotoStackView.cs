@@ -41,9 +41,11 @@ namespace NovelUIKit.UI.PhotoStack
         [SerializeField] private Transform cardsRoot;
         [SerializeField] private PhotoCardView cardPrefab;
         [SerializeField] private List<PhotoCardView> cardViews = new List<PhotoCardView>();
+        private Sprite currentCharacterSprite;
 
         public void SetCharacterSprite(Sprite character)
         {
+            currentCharacterSprite = character;
             if (characterFullImage != null)
             {
                 characterFullImage.sprite = character;
@@ -121,6 +123,10 @@ namespace NovelUIKit.UI.PhotoStack
                 if (instance != null)
                 {
                     cardViews.Add(instance);
+                    if (currentCharacterSprite != null)
+                    {
+                        instance.ApplyCharacterSprite(currentCharacterSprite);
+                    }
                 }
             }
         }

@@ -34,8 +34,12 @@ namespace NovelUIKit.UI.PhotoStack
 
             if (maskShapeImage != null)
             {
-                maskShapeImage.sprite = spec.maskSprite;
-                maskShapeImage.enabled = spec.maskSprite != null;
+                if (spec.maskSprite != null)
+                {
+                    maskShapeImage.sprite = spec.maskSprite;
+                }
+
+                maskShapeImage.enabled = true;
             }
 
             if (mask != null)
