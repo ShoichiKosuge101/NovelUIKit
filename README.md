@@ -24,6 +24,30 @@ Unity向けノベルゲームの演出重視テキスト表示システムです
 2. **ZLogger** をNuGet経由でインストール
 3. C# 10を有効化するため `Assets/csc.rsp` に `-langVersion:10 -nullable` を記載
 
+## 使用方法
+
+### 1. 前提条件
+
+メインプロジェクトで以下を事前に登録してください：
+
+- `ILoggerFactory` (ZLogger, Microsoft.Extensions.Logging等)
+
+### 2. Installer登録
+
+```csharp
+public class RootLifetimeScope : LifetimeScope
+{
+    protected override void Configure(IContainerBuilder builder)
+    {
+        // 1. インフラストラクチャを先に登録
+        builder.RegisterInstance(loggerFactory).As<ILoggerFactory>();
+
+        // 2. NovelUIKitを登録
+        new NovelUIKitInstaller().Install(builder);
+    }
+}
+```
+
 ### OpenUPM registry の設定例
 
 Unity の `Packages/manifest.json` に以下を追加してください。

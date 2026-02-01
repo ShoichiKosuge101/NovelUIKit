@@ -1,11 +1,10 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using UnityEngine;
 using UnityEngine.Rendering;
-using ZLogger;
 
 namespace NovelUIKit.Effects.ScreenEffects
 {
@@ -13,11 +12,14 @@ namespace NovelUIKit.Effects.ScreenEffects
     [RequireComponent(typeof(Camera))]
     public sealed class ScreenNoiseEffect : MonoBehaviour
     {
-        private static readonly ILogger Logger = LoggerFactory.Create(builder =>
+        private static ILoggerFactory _loggerFactory = NullLoggerFactory.Instance;
+
+        public static void ConfigureLoggerFactory(ILoggerFactory loggerFactory)
         {
-            builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
-            builder.AddZLoggerConsole();
-        }).CreateLogger<ScreenNoiseEffect>();
+            _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
+        }
+
+        private static ILogger Logger => _loggerFactory.CreateLogger<ScreenNoiseEffect>();
 
         [Header("Shader")]
         [SerializeField] private Shader screenNoiseShader;
