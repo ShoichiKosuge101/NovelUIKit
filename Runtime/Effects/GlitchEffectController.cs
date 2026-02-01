@@ -1,31 +1,31 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using UniRx;
 using UnityEngine;
-using ZLogger;
 
 namespace NovelUIKit.Effects
 {
     public sealed class GlitchEffectController : IGlitchEffectController
     {
-        private static readonly ILogger Logger = LoggerFactory.Create(builder =>
-        {
-            builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
-            builder.AddZLoggerConsole();
-        }).CreateLogger<GlitchEffectController>();
+        private readonly ILogger _logger;
 
         private CancellationTokenSource _stopCts = new CancellationTokenSource();
         private Subject<Unit> _stopSignal = new Subject<Unit>();
+
+        public GlitchEffectController(ILoggerFactory loggerFactory)
+        {
+            _logger = (loggerFactory ?? NullLoggerFactory.Instance).CreateLogger<GlitchEffectController>();
+        }
 
         public async UniTask ApplyGlyphCorruptionAsync(int startIndex, int endIndex, float duration, CancellationToken ct = default)
         {
             ValidateRange(startIndex, endIndex);
             var clampedDuration = Mathf.Max(0f, duration);
 
-            Logger.LogInformation(
+            _logger.LogInformation(
                 "Applying glyph corruption from {StartIndex} to {EndIndex} for {Duration}s.",
                 startIndex,
                 endIndex,
@@ -49,7 +49,7 @@ namespace NovelUIKit.Effects
         {
             ValidateRange(startIndex, endIndex);
 
-            Logger.LogInformation(
+            _logger.LogInformation(
                 "Applying vertex distortion {DistortionType} from {StartIndex} to {EndIndex}.",
                 type,
                 startIndex,
@@ -74,7 +74,7 @@ namespace NovelUIKit.Effects
             var clampedIntensity = Mathf.Clamp01(intensity);
             var clampedDuration = Mathf.Max(0f, duration);
 
-            Logger.LogInformation(
+            _logger.LogInformation(
                 "Playing screen noise with intensity {Intensity} for {Duration}s.",
                 clampedIntensity,
                 clampedDuration);
@@ -95,7 +95,7 @@ namespace NovelUIKit.Effects
 
         public void StopAllEffects()
         {
-            Logger.LogInformation("Stopping all glitch effects.");
+            _logger.LogInformation("Stopping all glitch effects.");
 
             _stopSignal.OnNext(Unit.Default);
             _stopSignal.OnCompleted();
